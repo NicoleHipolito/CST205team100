@@ -10,13 +10,63 @@ pygame.display.set_caption("Hungry Doge")
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
+
+#How large you want each square in the grid to be
 TILESIZE = 50
 
 #moveX, moveY = 0,0
-numberOfBurgers = 7
+numberOfBurgers = 1
+
+isOnApple = True
 
 #Sets the background variable to desired background image
 background_image = pygame.image.load("map.png").convert()
+
+# Creates a funcction that when called will return a x 
+def makeAppleX():
+    xTempApple = random.randrange(1, 9)
+    if(xTempApple == 1):
+        xApple = 700
+    elif(xTempApple == 2):
+        xApple = 750    
+    elif(xTempApple == 3):
+        xApple = 800
+    elif(xTempApple == 4):
+        xApple = 850 
+    elif(xTempApple == 5):
+        xApple = 900
+    elif(xTempApple == 6):
+        xApple = 950 
+    elif(xTempApple == 7):
+        xApple = 1000 
+    elif(xTempApple == 8):
+        xApple = 1050
+    elif(xTempApple == 9):
+        xApple = 1100 
+    
+    return xApple
+
+def makeAppleY():
+   
+    yTempApple = random.randrange(1, 7)
+    
+    if(yTempApple == 1): 
+        yApple = 0
+    elif(yTempApple == 2): 
+        yApple = 50
+    elif(yTempApple == 3):
+        yApple = 100
+    elif(yTempApple == 4):
+        yApple = 150
+    elif(yTempApple == 5):
+        yApple = 200
+    elif(yTempApple == 6):
+        yApple = 250
+    elif(yTempApple == 7):
+        yApple = 300
+        
+    return yApple
+        
 
 
 # Create an empty array
@@ -43,23 +93,23 @@ for i in range(numberOfBurgers):
         y = 300
         
     if(xTemp == 1):
-        x = 300
+        x = 700
     elif(xTemp == 2):
-        x = 350    
+        x = 750    
     elif(xTemp == 3):
-        x = 400
+        x = 800
     elif(xTemp == 4):
-        x = 450 
+        x = 850 
     elif(xTemp == 5):
-        x = 500
+        x = 900
     elif(xTemp == 6):
-        x = 550 
+        x = 950 
     elif(xTemp == 7):
-        x = 600 
+        x = 1000 
     elif(xTemp == 8):
-        x = 650
+        x = 1050
     elif(xTemp == 9):
-        x = 700 
+        x = 1100 
         
     burger_list.append([x, y])
     
@@ -107,7 +157,29 @@ class Item(pygame.sprite.Sprite):
     
         window.blit(self.i1, (burger_list[i][0],burger_list[i][1]))
      
-#///////////////////////////////////////////////////////////////////////////////////////////////////   
+#///////////////////////////////////////////////////////////////////////////////////////////////////  
+class SpecialItem(pygame.sprite.Sprite):
+         
+    x = makeAppleX()
+    y = makeAppleY() 
+    def __init__(self,): 
+        
+        self.x = x
+        
+        self.y = y
+        
+        self.width = 50
+        
+        self.height = 50
+        
+        self.i1 = pygame.image.load("apple.png")
+        self.rect = self.i1.get_rect()
+        
+    def render(self):
+    
+        window.blit(self.i1, (self.x,self.y))
+        
+#/////////////////////////////////////////////////////////////////////////////////////////////////// 
 def drawGrid():
      for x in range(0, 700, TILESIZE): # draw vertical lines
          pygame.draw.line(window, WHITE, (x, 0), (x, 300))
@@ -115,6 +187,7 @@ def drawGrid():
          pygame.draw.line(window, WHITE, (0, y), (700, y))
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////
+   
 
 #Creating the player (X position, Y Position)
 player = Sprite(50,150)
@@ -122,12 +195,16 @@ player = Sprite(50,150)
 #Creating the burger (Doesnt matter, will be re-written)
 burger = Item(0,0)
 
+
+#Creating the apple boot and its spawn chance
+apple = SpecialItem()
+
 #Creates gameloop and will be true untill game is over or use quits
 gameLoop = True 
 
 #Main Game Loop will be true untill game is over
 while gameLoop: 
-
+    appleDropChance = random.randrange(1, 10)
 #These will detect an event and use the approtpeate IF to give an action
     for event in pygame.event.get():
                 
@@ -148,20 +225,24 @@ while gameLoop:
                 player.y = player.y + 50
          
     #This sets the background using the background_image variable set at the top 
-    window.blit(background_image, [0, 0])
-    #window.fill(black)
+    window.blit(background_image, [0, 0])    
+        
+    
     # Process each Item in the list
     for i in range(len(burger_list)):
      
         # Draw the Item
-        burger.render()   
+        burger.render()     
      
         # Move the Item down one pixel
         burger_list[i][0] -= 10
         #print(burger_list[i][0])
         #print(burger_list[i][1])
         
+        #Collision for the player and the burger
         if(player.x == burger_list[i][0] and player.y == burger_list[i][1]):
+            print("*********************************You lose")
+            print("*********************************Have you tried the commaned git gud?")
             pygame.quit()
      
         # If the Item has moved off the bottom of the screen
@@ -184,7 +265,7 @@ while gameLoop:
                 y = 300
             burger_list[i][1] = y
             # Give it a new x position
-            xTemp = random.randrange(690,710)
+            xTemp = random.randrange(1,3)
             
             if(xTemp == 1):
                 x == 800
@@ -194,21 +275,44 @@ while gameLoop:
                 x == 900
                 
             burger_list[i][0] = x    
+     #end of burger for loop
+     
     
+    if(7 == appleDropChance):
         
+        while isOnApple:
+        
+            x = makeAppleX()    
+            y = makeAppleY()
             
+            apple.x = x
+            apple.y = y
+            for i in range(numberOfBurgers):
+                
+                if(apple.x != burger_list[i][0] or apple.y != burger_list[i][1]):
+                    apple.render()
+                    isOnApple = False 
+        
+        
+        
+        
+        print(apple.x)
+        print(apple.y)
+        
+    apple.x -= 10     
+    if(player.x == apple.x and player.y == apple.y):
+        print("Apple")   
     #print(player.x)
     player.render()
     
     #This calls a fucntion that draws a grid on the map for referance
-    #drawGrid()
+    drawGrid()
     
     
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
-    
     clock.tick(30)
-    
+    #print(appleDropChance)
     pygame.display.flip()
         
 pygame.quit()
