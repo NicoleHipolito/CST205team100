@@ -9,8 +9,9 @@ pygame.mixer.music.play(-1)
 pygame.display.set_caption("Hungry Doge     Score: 0     Speed: 10     Burgers dodged: 0")
 BLACK = (0,0,0)
 WHITE = (255,255,255)
+RED = (255,0,0)
 #**************var for manipulating speed of the burgers, apples, and mushrooms
-objectSpd = 10 #speed that objects will travel
+objectSpd = 5 #speed that objects will travel
 numDoge = 0
 #*******Score to display in the caption since the screen is all used.
 score = 0 #lets say that apples are worth 5 pnts and donuts are worth 1.
@@ -19,7 +20,7 @@ brgrsDgd = 0 #count of burgers dodged.
 #How large you want each square in the grid to be
 TILESIZE = 50
 #moveX, moveY = 0,0
-numberOfBurgers = 10
+numberOfBurgers = 1
 isOnApple = True
 #************I'm making a donut for the slow down item
 isOnDonut = True
@@ -55,6 +56,12 @@ class Item(pygame.sprite.Sprite):
 
         window.blit(self.i1, (burger_list[i][0],burger_list[i][1]))
 #/////////////////////////////////////////////////////////////////////////////////////////////////////
+font = pygame.font.SysFont(None, 25)
+
+def message_to_screen(msg, color):
+    screen_text = font.render(msg,True,color)
+    window.blit(screen_text,[150,100])
+#////////////////////////////////////////////////////////////////////////////////////////////////
 clock = pygame.time.Clock()
 
 
@@ -71,9 +78,10 @@ donut = SpecialItem(-10,-10, "donut.png")
 #Creating the instance of the treat
 treat = SpecialItem(-10,-10, "treat.png")
 #Creating the instance of the dogBowl
-bowl = SpecialItem(-10,-10, "dogBowl.png")
+bowl = SpecialItem(-10,-10, "dogbowl.png")
 #Creates gameloop and will be true untill game is over or use quits
 gameLoop = True
+gameOver = False
 isOnApple = True
 isOnDonut = True
 isOnTreat = True
@@ -86,6 +94,29 @@ while gameLoop:
     donutDropChance = random.randrange(1, 7)
     treatDropChance = random.randrange(1, 10)
     bowlDropChance = random.randrange(1, 5)
+    
+    while gameOver:
+        window.fill(BLACK)
+        pygame.mixer.pause()
+        message_to_screen("Game over, to play again press c, to quit press q.", RED)
+        pygame.display.update()
+        
+        for event in pygame.event.get():
+
+            if(event.type == pygame.KEYDOWN):
+            #This will quit the game when the user wants to with the exit button in the top  left corrner of the screen
+                if(event.type == pygame.QUIT):
+
+                    gameLoop = False
+                if(event.key == pygame.K_c):
+                    print("C")
+                    gameOver = False
+                    gameLoop = True
+                    
+                if(event.key == pygame.K_q):
+                    print("Q")
+                    pygame.quit()
+                    
 #These will detect an event and use the approtpeate IF to give an action
     for event in pygame.event.get():
         #This will quit the game when the user wants to with the exit button in the top left corrner of the screen
@@ -117,7 +148,7 @@ while gameLoop:
 
         #Collision for the player and the burger
         if(player.x == burger_list[i][0] and player.y == burger_list[i][1] and isThereTwoSprites == False):
-            pygame.quit()
+            gameOver = True
         elif (player.x == burger_list[i][0] and player.y == burger_list[i][1] and isThereTwoSprites):
             isThereTwoSprites = False
         # If the Item has moved off the bottom of the screen
@@ -176,7 +207,7 @@ while gameLoop:
     if(player.x == bowl.x and player.y == bowl.y):
         pygame.mixer.music.load('GameSong.wav')
         pygame.mixer.music.play(-1)
-        objectSpd = 10
+        objectSpd = 5
     #***************************************************
     if(3 == appleDropChance and apple.x < 0):
         while isOnApple:
@@ -199,7 +230,14 @@ while gameLoop:
         #print score at the top of screen, and yeah overwrite the title
         #*************Increment the speed of the items
         if objectSpd <= 50:
-            objectSpd += 10
+            if objectSpd == 1:
+                objectSpd = 5
+            elif objectSpd == 5:
+                objectSpd = 10
+            elif objectSpd == 10:
+                objectSpd = 25
+            elif objectSpd == 25:
+                objectSpd = 50
         else:
             print("well, I think you've won or something")#should we make a
                                                           #certain speed
@@ -231,10 +269,15 @@ while gameLoop:
 
         #*****THIS PART OF THE CODE MAY HAVE ISSUES WITH MATH AND STUFF
         #*************Increment the speed of the items
-        if objectSpd >= 11: #I dont want the speed to reach 0 lol
-            objectSpd -= 10
-        elif objectSpd > 0:
-            objectSpd = 5
+        if objectSpd > 0:
+            if objectSpd == 5:
+                objectSpd = 1
+            elif objectSpd == 10:
+                objectSpd = 5
+            elif objectSpd == 25:
+                objectSPd = 10
+            elif objectSpd == 50:
+                objectSpd = 25
         else:
             print("well, I think you've won or something")
     #***************************************************
