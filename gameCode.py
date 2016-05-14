@@ -3,8 +3,6 @@ import random
 from classesAndFunctions import *
 pygame.init()
 window = pygame.display.set_mode((700,300))
-pygame.mixer.music.load("GameSong.wav")
-pygame.mixer.music.play(-1)
 #added a score on the caption
 pygame.display.set_caption("Hungry Doge     Score: 0     Speed: 10     Burgers dodged: 0")
 BLACK = (0,0,0)
@@ -14,7 +12,6 @@ LRED = (255,0,0)
 GREEN = (0,125,0)
 LGREEN = (0,255,0)
 #**************var for manipulating speed of the burgers, apples, and mushrooms
-objectSpd = 5 #speed that objects will travel
 
 #**Vars used in the menu****
 display_width = 700
@@ -28,7 +25,6 @@ numDoge = 0
 #How large you want each square in the grid to be
 TILESIZE = 50
 #moveX, moveY = 0,0
-numberOfBurgers = 1
 isOnApple = True
 #************I'm making a donut for the slow down item
 isOnDonut = True
@@ -36,33 +32,6 @@ isOnDonut = True
 #Sets the background variable to desired background image
 background_image = pygame.image.load("map.png").convert()
 
-# Create an empty array
-burger_list = []
-
-# Loop # of times depending on number of burgers wanted and sets [x,y]
-for i in range(numberOfBurgers):
-    x = getX()
-    y = getY()
-    burger_list.append([x, y])
-#/////////////////////////////////////////////////////////////////////////////////////////////////////
-class Item(pygame.sprite.Sprite):
-
-    def __init__(self,x,y):
-
-        self.x = burger_list[i][0]
-
-        self.y = burger_list[i][1]
-
-        self.width = 50
-
-        self.height = 50
-
-        self.i1 = pygame.image.load("burger1.png")
-        self.rect = self.i1.get_rect()
-
-    def render(self):
-
-        window.blit(self.i1, (burger_list[i][0],burger_list[i][1]))
 #/////////////////////////////////////////////////////////////////////////////////////////////////////
 font = pygame.font.SysFont(None, 25)
 
@@ -73,30 +42,13 @@ def message_to_screen(msg, color):
 clock = pygame.time.Clock()
 
 
-#Creating the player (X position, Y Position)
-# x, y, w, h, pictureName)
-player = Sprite(50,150,50,50,"doge.png")
-player2 = Sprite(50,100,30,30, "superDoge.png")
-#Creating the burger (Doesnt matter, will be re-written)
-burger = Item(0,0)
-#Creating the apple boot and its spawn chance
-apple = SpecialItem(-10,-10, "apple.png")
-#************Creating the donut too#CHECK iF ERRoRs
-donut = SpecialItem(-10,-10, "donut.png")
-#Creating the instance of the treat
-treat = SpecialItem(-10,-10, "treat.png")
-#Creating the instance of the dogBowl
-bowl = SpecialItem(-10,-10, "dogbowl.png")
-
-
-
 #function for creating text
 def text_objects(text, font):
     textSurface = font.render(text, True, BLACK)#render the font
     return textSurface, textSurface.get_rect()
 
 ##    #lights up the button when the cursor hovers over it.
-##        
+##
 ##    #if the x position of the mouse is greater than the x position
 ##    #of the rectangle and less than (the x position of the
 ##    #rectangle plus the width of the rectangle)
@@ -128,8 +80,6 @@ def quitGame():
 
 #button function
 def button(msg,x,y,w,h,nc,ac,action=None):#(message,x,y,width,height,normal color, active color)
-
-
     #gets the position of the mouse
     mouse = pygame.mouse.get_pos()
 
@@ -137,7 +87,7 @@ def button(msg,x,y,w,h,nc,ac,action=None):#(message,x,y,width,height,normal colo
     click = pygame.mouse.get_pressed()
 
     #lights up the button when the cursor hovers over it.
-        
+
     #if the x position of the mouse is greater than the x position
     #of the rectangle and less than (the x position of the
     #rectangle plus the width of the rectangle)
@@ -155,7 +105,7 @@ def button(msg,x,y,w,h,nc,ac,action=None):#(message,x,y,width,height,normal colo
             elif action == "quit":
                 pygame.quit()
                 quit()
-        
+
     else:
         #draws a colored rectangle on the menu for a button
         pygame.draw.rect(window, nc,(x,y,w,h))
@@ -166,7 +116,7 @@ def button(msg,x,y,w,h,nc,ac,action=None):#(message,x,y,width,height,normal colo
     textRect.center = ((x+(w/2)),(y+(h/2)))
     window.blit(textSurf, textRect)
 
-    
+
 
 #*****************************
 #*****************MENU***************
@@ -196,14 +146,7 @@ def game_menu():
         #draw buttons so they interact with the mouse by changing color
         button("Start",150,200,100,50,GREEN,LGREEN, "play")
         button("Quit",430,200,100,50,RED,LRED, "quit")
-        
-       
-        
-        
 
-        
-
-        
         pygame.display.update()
         clock.tick(15)
 
@@ -211,6 +154,51 @@ def game_menu():
 #******GAME LOOP FUNC
 
 def gameLoop():
+    pygame.mixer.music.load("GameSong.wav")
+    pygame.mixer.music.play(-1)
+    objectSpd = 5 #speed that objects will travel
+    # Create an empty array
+    burger_list = []
+    numberOfBurgers = 10
+    # Loop # of times depending on number of burgers wanted and sets [x,y]
+    for i in range(numberOfBurgers):
+        x = getX()
+        y = getY()
+        burger_list.append([x, y])
+    #/////////////////////////////////////////////////////////////////////////////////////////////////////
+    class Item(pygame.sprite.Sprite):
+
+        def __init__(self,x,y):
+
+            self.x = burger_list[i][0]
+
+            self.y = burger_list[i][1]
+
+            self.width = 50
+
+            self.height = 50
+
+            self.i1 = pygame.image.load("burger1.png")
+            self.rect = self.i1.get_rect()
+
+        def render(self):
+
+            window.blit(self.i1, (burger_list[i][0],burger_list[i][1]))
+
+    #Creating the player (X position, Y Position)
+    # x, y, w, h, pictureName)
+    player = Sprite(50,150,50,50,"doge.png")
+    player2 = Sprite(50,100,30,30, "superDoge.png")
+    #Creating the burger (Doesnt matter, will be re-written)
+    burger = Item(0,0)
+    #Creating the apple boot and its spawn chance
+    apple = SpecialItem(-10,-10, "apple.png")
+    #************Creating the donut too#CHECK iF ERRoRs
+    donut = SpecialItem(-10,-10, "donut.png")
+    #Creating the instance of the treat
+    treat = SpecialItem(-10,-10, "treat.png")
+    #Creating the instance of the dogBowl
+    bowl = SpecialItem(-10,-10, "dogbowl.png")
     #Creates gameloop and will be true untill game is over or use quits
     gameLoop = True
     gameOver = False
@@ -220,9 +208,6 @@ def gameLoop():
     isOnBowl = True
     isBeginning = True
     isThereTwoSprites = True
-
-    #declare global var
-    global objectSpd
     score = 0 #lets say that apples are worth 5 pnts and donuts are worth 1.
     brgrsDgd = 0 #count of burgers dodged.
     #Main Game Loop will be true untill game is over
@@ -231,13 +216,13 @@ def gameLoop():
         donutDropChance = random.randrange(1, 7)
         treatDropChance = random.randrange(1, 10)
         bowlDropChance = random.randrange(1, 5)
-        
+
         while gameOver:
             window.fill(BLACK)
             pygame.mixer.pause()
             message_to_screen("Game over, to play again press c, to quit press q.", RED)
             pygame.display.update()
-            
+
             for event in pygame.event.get():
 
                 if(event.type == pygame.KEYDOWN):
@@ -250,11 +235,11 @@ def gameLoop():
                         gameOver = False
                         gameLoop = True
                         game_menu()
-                        
+
                     if(event.key == pygame.K_q):
                         print("Q")
                         pygame.quit()
-                        
+
     #These will detect an event and use the approtpeate IF to give an action
         for event in pygame.event.get():
             #This will quit the game when the user wants to with the exit button in the top left corrner of the screen
@@ -285,9 +270,9 @@ def gameLoop():
             #print(burger_list[i][1])
 
             #Collision for the player and the burger
-            if(player.x == burger_list[i][0] and player.y == burger_list[i][1] and isThereTwoSprites == False):
+            if((player.x+30 == burger_list[i][0]) and player.y == burger_list[i][1] and isThereTwoSprites == False):
                 gameOver = True
-            elif (player.x == burger_list[i][0] and player.y == burger_list[i][1] and isThereTwoSprites):
+            elif ((player.x+30 == burger_list[i][0]) and player.y == burger_list[i][1] and isThereTwoSprites):
                 isThereTwoSprites = False
             # If the Item has moved off the bottom of the screen
             if burger_list[i][0] < 0:
@@ -322,9 +307,11 @@ def gameLoop():
 
         treat.x -= objectSpd
 
-        if(player.x == treat.x and player.y == treat.y):
+        if(((player.x+30 == treat.x) or (player.x == treat.x)) and player.y == treat.y):
             pygame.mixer.music.load('realPlusImag.wav')
             pygame.mixer.music.play(-1)
+            treat.x = -1000
+            treat.y = -1000
             player2.x = player.x
             player2.y = player.y
             isThereTwoSprites = True
@@ -342,9 +329,11 @@ def gameLoop():
 
         bowl.x -= objectSpd
 
-        if(player.x == bowl.x and player.y == bowl.y):
+        if(((player.x+30 == bowl.x) or (player.x == bowl.x)) and player.y == bowl.y):
             pygame.mixer.music.load('GameSong.wav')
             pygame.mixer.music.play(-1)
+            bowl.x = -1000
+            bowl.y = -1000
             objectSpd = 5
         #***************************************************
         if(3 == appleDropChance and apple.x < 0):
@@ -360,9 +349,11 @@ def gameLoop():
         apple.x -= objectSpd
         #***************************************************
         #collision with apple.
-        if(player.x == apple.x and player.y == apple.y):
+        if(((player.x+30 == apple.x) or (player.x == apple.x)) and player.y == apple.y):
             pygame.mixer.music.load('fast.wav')
             pygame.mixer.music.play(-1)
+            apple.x = -1000
+            apple.y = -1000
             #add to score
             score += 5
             #print score at the top of screen, and yeah overwrite the title
@@ -398,10 +389,12 @@ def gameLoop():
 
         donut.x -= objectSpd
         #collision with donut.
-        if(player.x == donut.x and player.y == donut.y):
+        if(((player.x+30 == donut.x) or (player.x == donut.x)) and player.y == donut.y):
             #print('Donut')
             pygame.mixer.music.load('slow.wav')
             pygame.mixer.music.play(-1)
+            donut.x = -1000
+            donut.y = -1000
             #add to score
             score += 1
 
