@@ -28,10 +28,10 @@ def freqManip():
 
     #This is the loop that manipulates audio:
     while(True):
-        print("Length of data:", len(data))
-        print("Width: ", nwidth)
-        print("l(d)/w: ", (len(data)/nwidth))
-        print("(l(d)/w)*2: ", (len(data)/nwidth)*2)
+        #print("Length of data:", len(data))
+        #print("Width: ", nwidth)
+        #print("l(d)/w: ", (len(data)/nwidth))
+        #print("(l(d)/w)*2: ", (len(data)/nwidth)*2)
         data = np.array(wave.struct.unpack("%dh"%(len(data)/nwidth), data))*2
         #print data
         data = np.fft.fft(data)
